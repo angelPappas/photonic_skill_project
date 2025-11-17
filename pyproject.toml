@@ -1,0 +1,15 @@
+[project]
+name = "photonic-skill-project"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "dodata>=0.7.0",
+    "femwell>=0.1.12",
+    "gdsfactory>=9.20.8",
+    "gplugins>=1.4.2",
+    "meshio>=5.3.5",
+    "scikit-fem>=11.0.0",
+    "skfem>=0.0.0",
+]
