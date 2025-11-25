@@ -14,7 +14,7 @@ n_Si = 3.48  # silicon
 n_SiO2 = 1.444  # SiO2
 
 def mmi2x2(
-        wg_length: float=3, wg_width: float = 0.4, taper_length: float=8, taper_width: float=0.6, mmi_width: float=2.55, mmi_length: float=30,
+        wg_length: float=3, wg_width: float = 0.5, taper_length: float=8, taper_width: float=0.6, mmi_width: float=2.19, mmi_length: float=7.7,
         THREE_D: bool=False):
 
     THREE_D = THREE_D
@@ -35,12 +35,12 @@ def mmi2x2(
     mmi_width = mmi_width
     mmi_length = mmi_length
 
-    gap_between_ports = mmi_width/2
+    gap_between_ports = 2.19/2 # I am fixing the gap, before was mmi_width/2
     
     # The y-coordinate of the center of the waveguides is at +- gap_between_ports/2
     # If I make the monitors too wide, they will overlap! This is why I choose them to be min(gap_between_ports, 2),
     # making sure they stay on their half of the simulation region (y>0 or y<0).
-    monitor_width = wg_width + 0.2
+    monitor_width = wg_width + 0.3
 
     dpml = 1
     cell_thickness = (dpml + t_SiO2 + t_Si + t_air + dpml) if THREE_D else 0
@@ -189,49 +189,51 @@ def mmi2x2(
     return sim, cell, mode1, mode2, mode3, mode4, src_volume, resolution, pml_layers, geometry
 
 
-# parameter ranges
-mmi_lengths = np.arange(7.5, 8.5, .1)   # µm
-mmi_widths  = np.arange(2.15, 2.26, 0.01)   # µm (1.5, 2.8, 0.1)
+if __name__ == "__main__":
 
-# allocate output arrays
-S31 = np.zeros((len(mmi_widths), len(mmi_lengths)))
-S41 = np.zeros((len(mmi_widths), len(mmi_lengths)))
+    # parameter ranges
+    mmi_lengths = np.arange(6.0, 8.5, .05)   # µm
+    mmi_widths  = np.arange(2.1, 2.35, 0.01)   # µm (1.5, 2.8, 0.1)
 
-THREE_D = False
+    # allocate output arrays
+    S31 = np.zeros((len(mmi_widths), len(mmi_lengths)))
+    S41 = np.zeros((len(mmi_widths), len(mmi_lengths)))
 
-# Prepare CSV file with header (only once)
-csv_file = "S_parameters_mmi2x2_2D_fine_sweep.csv"
-if not os.path.exists(csv_file):
-    with open(csv_file, mode='w', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(["mmi_width (um)", "mmi_length (um)", "S31", "S41"])
+    THREE_D = False
 
-# nested sweeps
-for i, mmi_width in enumerate(mmi_widths):
-    for j, mmi_length in enumerate(mmi_lengths):
-        print(f"Simulation for (width, length)=({mmi_width},{mmi_length})")
-        
-        # --- run simulation for this (width, length) pair ---
-        sim, cell, mode1, mode2, mode3, mode4, src_volume, resolution, pml_layers, geometry = \
-            mmi2x2(THREE_D=THREE_D,
-                   mmi_length=float(mmi_length),
-                   mmi_width=float(mmi_width))   # ← pass width to your function
-
-        # extract eigenmode coefficients
-        p1 = sim.get_eigenmode_coefficients(mode1, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,0,0]
-        p2 = sim.get_eigenmode_coefficients(mode2, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,0,1]
-        p3 = sim.get_eigenmode_coefficients(mode3, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,0,0]
-        p4 = sim.get_eigenmode_coefficients(mode4, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,0,0]
-
-        # store values
-        S31[i, j] = abs(p3) / abs(p1)
-        S41[i, j] = abs(p4) / abs(p1)
-
-        # append row to CSV
-        with open(csv_file, mode='a', newline='') as f:
+    # Prepare CSV file with header (only once)
+    csv_file = "S_parameters_mmi2x2_2D_fixed_gap_3.csv"
+    if not os.path.exists(csv_file):
+        with open(csv_file, mode='w', newline='') as f:
             writer = csv.writer(f)
-            writer.writerow([mmi_width, mmi_length, S31[i,j], S41[i,j]])
+            writer.writerow(["mmi_width (um)", "mmi_length (um)", "S31", "S41"])
 
-        print(S31)
+    # nested sweeps
+    for i, mmi_width in enumerate(mmi_widths):
+        for j, mmi_length in enumerate(mmi_lengths):
+            print(f"Simulation for (width, length)=({mmi_width},{mmi_length})")
+            
+            # --- run simulation for this (width, length) pair ---
+            sim, cell, mode1, mode2, mode3, mode4, src_volume, resolution, pml_layers, geometry = \
+                mmi2x2(THREE_D=THREE_D,
+                    mmi_length=float(mmi_length),
+                    mmi_width=float(mmi_width))   # ← pass width to your function
 
-        print(S41)
+            # extract eigenmode coefficients
+            p1 = sim.get_eigenmode_coefficients(mode1, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,0,0]
+            p2 = sim.get_eigenmode_coefficients(mode2, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,0,1]
+            p3 = sim.get_eigenmode_coefficients(mode3, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,0,0]
+            p4 = sim.get_eigenmode_coefficients(mode4, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,0,0]
+
+            # store values
+            S31[i, j] = abs(p3) / abs(p1)
+            S41[i, j] = abs(p4) / abs(p1)
+
+            # append row to CSV
+            with open(csv_file, mode='a', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow([mmi_width, mmi_length, S31[i,j], S41[i,j]])
+
+            print(S31)
+
+            print(S41)
