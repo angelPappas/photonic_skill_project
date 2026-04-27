@@ -394,14 +394,14 @@ def mmi2x2_bend_waveguides(
     # TODO: look into the monitor's frequency response to see how to get the bandwidth
 
     # === output flux probes ===
-    mode1 = sim.add_mode_monitor(fcen, df, 21, mp.ModeRegion(volume=p1))
-    mode2 = sim.add_mode_monitor(fcen, df, 21, mp.ModeRegion(volume=p2))
-    mode3 = sim.add_mode_monitor(fcen, df, 21, mp.ModeRegion(volume=p3))
-    mode4 = sim.add_mode_monitor(fcen, df, 21, mp.ModeRegion(volume=p4))
-    # mode1 = sim.add_mode_monitor(fcen, 0, 1, mp.ModeRegion(volume=p1))
-    # mode2 = sim.add_mode_monitor(fcen, 0, 1, mp.ModeRegion(volume=p2))
-    # mode3 = sim.add_mode_monitor(fcen, 0, 1, mp.ModeRegion(volume=p3))
-    # mode4 = sim.add_mode_monitor(fcen, 0, 1, mp.ModeRegion(volume=p4))
+    # mode1 = sim.add_mode_monitor(fcen, df, 21, mp.ModeRegion(volume=p1))
+    # mode2 = sim.add_mode_monitor(fcen, df, 21, mp.ModeRegion(volume=p2))
+    # mode3 = sim.add_mode_monitor(fcen, df, 21, mp.ModeRegion(volume=p3))
+    # mode4 = sim.add_mode_monitor(fcen, df, 21, mp.ModeRegion(volume=p4))
+    mode1 = sim.add_mode_monitor(fcen, 0, 1, mp.ModeRegion(volume=p1))
+    mode2 = sim.add_mode_monitor(fcen, 0, 1, mp.ModeRegion(volume=p2))
+    mode3 = sim.add_mode_monitor(fcen, 0, 1, mp.ModeRegion(volume=p3))
+    mode4 = sim.add_mode_monitor(fcen, 0, 1, mp.ModeRegion(volume=p4))
 
     # === run simulation ===
     sim.run(until_after_sources=100)
@@ -413,85 +413,85 @@ if __name__ == "__main__":
 
     THREE_D = True
 
-    # # parameter ranges
-    # mmi_lengths = np.arange(3.3, 4.0, .05)   # µm
+    # parameter ranges
+    mmi_lengths = np.arange(3.11, 3.35, .01)   # µm
 
-    # S11 = np.zeros(len(mmi_lengths))
-    # S21 = np.zeros(len(mmi_lengths))
-    # S31 = np.zeros(len(mmi_lengths))
-    # S41 = np.zeros(len(mmi_lengths))
+    S11 = np.zeros(len(mmi_lengths))
+    S21 = np.zeros(len(mmi_lengths))
+    S31 = np.zeros(len(mmi_lengths))
+    S41 = np.zeros(len(mmi_lengths))
 
-
-    # # Prepare CSV file with header (only once)
-    # csv_file = "S_parameters_mmi2x2_with_bends_3D.csv"
-    # if not os.path.exists(csv_file):
-    #     with open(csv_file, mode='w', newline='') as f:
-    #         writer = csv.writer(f)
-    #         writer.writerow(["mmi_length (um)", "S31", "S41"])
-
-
-    # for j, mmi_length in enumerate(mmi_lengths):
-    #     print(f"Simulation for (width, length)=({mmi_length})")
-        
-    #     # --- run simulation for this (width, length) pair ---
-    #     sim, cell, mode1, mode2, mode3, mode4, src_volume, resolution, pml_layers, geometry = \
-    #         mmi2x2_bend_waveguides(THREE_D=THREE_D,
-    #             mmi_length=float(mmi_length))
-
-    #     # extract eigenmode coefficients
-    #     p1 = sim.get_eigenmode_coefficients(mode1, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,0,0]
-
-    #     p1_ref = sim.get_eigenmode_coefficients(mode1, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,0,1]
-        
-    #     p2 = sim.get_eigenmode_coefficients(mode2, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,0,1]
-    #     p3 = sim.get_eigenmode_coefficients(mode3, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,0,0]
-    #     p4 = sim.get_eigenmode_coefficients(mode4, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,0,0]
-
-    #     # store values
-    #     S11[j] = abs(p1_ref) / abs(p1)
-    #     S21[j] = abs(p2) / abs(p1)
-    #     S31[j] = abs(p3) / abs(p1)
-    #     S41[j] = abs(p4) / abs(p1)
-
-    #     # append row to CSV
-    #     with open(csv_file, mode='a', newline='') as f:
-    #         writer = csv.writer(f)
-    #         writer.writerow([mmi_length, S31[j], S41[j]])
-
-    #     print(S31)
-
-    #     print(S41)
-
-    # --- run simulation for this (width, length) pair ---
-    sim, cell, mode1, mode2, mode3, mode4, src_volume, resolution, pml_layers, geometry = \
-        mmi2x2_bend_waveguides(THREE_D=THREE_D,
-            mmi_length=3.15)
 
     # Prepare CSV file with header (only once)
-    csv_file = "S_parameters_mmi2x2_with_bends_3D_3p15.csv"
+    csv_file = "S_parameters_mmi2x2_with_bends_3D.csv"
     if not os.path.exists(csv_file):
         with open(csv_file, mode='w', newline='') as f:
             writer = csv.writer(f)
-            writer.writerow(["wavelength (um)", "S11", "S21", "S31", "S41"])
+            writer.writerow(["mmi_length (um)", "S31", "S41"])
 
-    freqs = mp.get_eigenmode_freqs(mode1)
-    wavelengths = 1/np.array(freqs)
 
-    # extract eigenmode coefficients
-    p1 = sim.get_eigenmode_coefficients(mode1, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,:,0]
-    p1_refl = sim.get_eigenmode_coefficients(mode1, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,:,1]
-    p2 = sim.get_eigenmode_coefficients(mode2, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,:,1]
-    p3 = sim.get_eigenmode_coefficients(mode3, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,:,0]
-    p4 = sim.get_eigenmode_coefficients(mode4, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,:,0]
+    for j, mmi_length in enumerate(mmi_lengths):
+        print(f"Simulation for (width, length)=({mmi_length})")
+        
+        # --- run simulation for this (width, length) pair ---
+        sim, cell, mode1, mode2, mode3, mode4, src_volume, resolution, pml_layers, geometry = \
+            mmi2x2_bend_waveguides(THREE_D=THREE_D,
+                mmi_length=float(mmi_length))
 
-    # store values
-    S11 = abs(p1_refl) / abs(p1)
-    S21 = abs(p2) / abs(p1)
-    S31 = abs(p3) / abs(p1)
-    S41 = abs(p4) / abs(p1)
+        # extract eigenmode coefficients
+        p1 = sim.get_eigenmode_coefficients(mode1, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,0,0]
 
-    # append row to CSV
-    with open(csv_file, mode='a', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow([wavelengths, S11, S21, S31, S41])
+        p1_ref = sim.get_eigenmode_coefficients(mode1, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,0,1]
+        
+        p2 = sim.get_eigenmode_coefficients(mode2, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,0,1]
+        p3 = sim.get_eigenmode_coefficients(mode3, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,0,0]
+        p4 = sim.get_eigenmode_coefficients(mode4, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,0,0]
+
+        # store values
+        S11[j] = abs(p1_ref) / abs(p1)
+        S21[j] = abs(p2) / abs(p1)
+        S31[j] = abs(p3) / abs(p1)
+        S41[j] = abs(p4) / abs(p1)
+
+        # append row to CSV
+        with open(csv_file, mode='a', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow([mmi_length, S31[j], S41[j]])
+
+        print(S31)
+
+        print(S41)
+
+    # # --- run simulation for this (width, length) pair ---
+    # sim, cell, mode1, mode2, mode3, mode4, src_volume, resolution, pml_layers, geometry = \
+    #     mmi2x2_bend_waveguides(THREE_D=THREE_D,
+    #         mmi_length=3.15)
+
+    # # Prepare CSV file with header (only once)
+    # csv_file = "S_parameters_mmi2x2_with_bends_3D_3p15.csv"
+    # if not os.path.exists(csv_file):
+    #     with open(csv_file, mode='w', newline='') as f:
+    #         writer = csv.writer(f)
+    #         writer.writerow(["wavelength (um)", "S11", "S21", "S31", "S41"])
+
+    # freqs = mp.get_eigenmode_freqs(mode1)
+    # wavelengths = 1/np.array(freqs)
+
+    # # extract eigenmode coefficients
+    # p1 = sim.get_eigenmode_coefficients(mode1, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,:,0]
+    # p1_refl = sim.get_eigenmode_coefficients(mode1, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,:,1]
+    # p2 = sim.get_eigenmode_coefficients(mode2, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,:,1]
+    # p3 = sim.get_eigenmode_coefficients(mode3, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,:,0]
+    # p4 = sim.get_eigenmode_coefficients(mode4, [1], eig_parity=mp.NO_PARITY if THREE_D else mp.EVEN_Y + mp.ODD_Z).alpha[0,:,0]
+
+    # # store values
+    # S11 = abs(p1_refl) / abs(p1)
+    # S21 = abs(p2) / abs(p1)
+    # S31 = abs(p3) / abs(p1)
+    # S41 = abs(p4) / abs(p1)
+
+    # # append row to CSV
+    # with open(csv_file, mode='a', newline='') as f:
+    #     writer = csv.writer(f)
+    #     writer.writerow([wavelengths, S11, S21, S31, S41])
     
