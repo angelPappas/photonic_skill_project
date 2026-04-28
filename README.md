@@ -1,24 +1,85 @@
-1. How many chips have you taped out? How many of those were designed using
-GDSFactory?
+# Photonic Skill Project
 
-    Unfortunately I have not taped out chips. My experience with design has been more on the simulation side, but have also built parts of the PDK at Lightium using GDSFactory.
+Photonic integrated circuit (PIC) design and simulation project using [Tidy3D](https://www.flexcompute.com/tidy3d/) and [FEMwell](https://github.com/flaport/femwell) for electromagnetic wave simulations.
 
-2. What are your preferred design tools for each task you use during the design process?
+## Project Structure
 
-    This has been the first time I use open-source software. For photonic simulations I would typically use Lumerical, for RF HFSS, and for system-level simulations Interconnect.
+```
+photonic_skill_project/
+├── 1_pn_phase_shifter_FEMWELL/    # PN phase shifter analysis using FEMwell
+├── 2_SiN_single_mode_wg_FEMWELL/  # Silicon nitride single-mode waveguide
+├── 3_2x2_splitter_MEEP/           # Passive component designs (MMI, couplers)
+├── 4_simplest_transceiver_layout_GDSFactory/            # Layout files (GDS)
+├── 5_bend_waveguide_Tidy3D/       # Bent waveguide characterization
+├── environment.yml                # Conda environment specification
+├── pyproject.toml                 # Python project configuration
+└── README.md                      # This file
+```
 
-3. Which foundries have you worked with?
+## Getting Started
 
-    I have not worked with foundries for tapeouts, but have worked at foundries, at Polariton Technologies as a Test Engineer, and at Lightium as Photonic Design Intern.
+### Prerequisites
 
-4. What is your GitHub profile link?
+- [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Mamba](https://mamba.readthedocs.io/)
+- Python 3.13+
 
-    https://github.com/angelPappas
+### Installation
 
-5. What AI tools do you use in your workflow?
+```bash
+# Create environment from file
+conda env create -f environment.yml
 
-    My go-to is definitely ChatGPT. I do also use perplexity, mainly for being pointed towards resources.
+# Activate environment
+conda activate pmp
+```
 
-    Directly inside an IDE I have used Copilot, and also Cline(with some cheaper Google's LLM).
-    Copilot I enjoy more in terms of autocomplete/suggestions, though I find it to be too focused on the specific piece of code, and cannot give you the bigger picture.
-    Cline worked better in my experience with building a multi-file project.
+Or using uv:
+
+```bash
+uv sync
+```
+
+## Components
+
+### 1. PN Phase Shifter (FEMWELL)
+
+Analysis of reverse-biased PN junction phase shifters using FEMwell mode solver. Calculates:
+- Refractive index change due to carrier depletion
+- Lπ: π phase shift length for given applied voltages
+- Insertion loss
+
+### 2. Silicon Nitride Single-Mode Waveguide
+
+FEMWELL-based single-mode waveguide characterization for SiN platform.
+For fixed waveguide thickness, and variable width, calculates effective index of up to 8 modes, and sets the maximum width for which it is single-mode.
+
+### 3. Passive Design
+
+- **MMI 2x2**: Multimode interference splitter design and optimization
+- **Directional Coupler**: Coupler design with S-parameter extraction
+- **GDS Files**: Layout exports for fabrication
+
+### 4. Bent Waveguide Characterization
+
+Bend loss and mode analysis for curved waveguide structures.
+
+### 5. Transceiver Layout
+
+Implementation of the simplest transceiver layout in GDSFactory.
+
+## Simulation Tools
+
+| Tool | Purpose | Availability
+|------|---------|--------------|
+| [Tidy3D](https://www.flexcompute.com/tidy3d/) | FDTD simulations (3D) | Subscription required |
+| [FEMwell](https://github.com/flaport/femwell) | FEM mode solver (2D cross-section) | Open-source |
+| [Meep](https://github.com/LumericalFDTD/meep) | FDTD with MPI parallelization | Open-source |
+
+## Notebooks
+
+- `draft.ipynb` — Initial development and testing
+- `tidy3d_example.ipynb` — Tidy3D tutorial examples
+
+## License
+
+MIT
