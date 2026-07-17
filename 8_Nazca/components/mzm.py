@@ -8,12 +8,12 @@ and an output 2x2 directional coupler.
 import nazca as nz
 from .heater import heater
 from .directional_coupler import coupler
-from .product_cell import newProductCell
+from .product_cell import new_product_cell
 from ..layers import wvg
 import numpy as np
 from pathlib import Path
 
-def MZM(coupler_gap, coupler_length, arm_distance, coupler_radius, heater_length):
+def mzm(coupler_gap, coupler_length, arm_distance, coupler_radius, heater_length):
 
     with nz.Cell(name="MZM") as C:
         # Input coupler
@@ -42,9 +42,9 @@ def MZM(coupler_gap, coupler_length, arm_distance, coupler_radius, heater_length
 
 if __name__ == "__main__":
 
-    C = newProductCell(cell_name='T1', cell_width=2500, cell_height=2500, barcode_sequence=np.random.randint(2,size=70)).put()
+    C = new_product_cell(cell_name='T1', cell_width=2500, cell_height=2500, barcode_sequence=np.random.randint(2,size=70)).put()
 
-    mzm = MZM(coupler_gap=4, coupler_length=150, arm_distance=200, coupler_radius=50, heater_length=200).put(300, 800)
+    mzm = mzm(coupler_gap=4, coupler_length=150, arm_distance=200, coupler_radius=50, heater_length=200).put(300, 800)
 
     length_left = mzm.pin['a0'].x
     wvg.strt(length=length_left).put(mzm.pin['a0'])

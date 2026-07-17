@@ -9,7 +9,7 @@ from pathlib import Path
 
 import numpy as np
 
-def newProductCell(cell_name, cell_width, cell_height, barcode_sequence):
+def new_product_cell(cell_name, cell_width, cell_height, barcode_sequence):
 
     with nz.Cell(name=cell_name) as C:
 
@@ -49,7 +49,7 @@ def newProductCell(cell_name, cell_width, cell_height, barcode_sequence):
 
 if __name__ == "__main__":
 
-    C = newProductCell(
+    C = new_product_cell(
         cell_name='T1',
         cell_height=2500,
         cell_width=2500,
