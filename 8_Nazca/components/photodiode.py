@@ -3,12 +3,9 @@ Photodiode component.
 """
 
 import nazca as nz
-import itertools
 from pathlib import Path
 
 from ..layers import wvg, pmt, nmt
-
-_counter = itertools.count(1)
 
 def photodiode(photodiode_pcon_width, photodiode_ncon_width, photodiode_length):
 

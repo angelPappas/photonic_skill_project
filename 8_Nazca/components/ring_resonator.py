@@ -2,15 +2,12 @@
 Ring resonator component.
 """
 
-import itertools
 import nazca as nz
 
 from pathlib import Path
 
 
 from ..layers import wvg, wg_width
-
-_counter = itertools.count(1)
 
 def ring_resonator(coupler_length, coupler_gap, coupler_radius,ring_radius):
 
