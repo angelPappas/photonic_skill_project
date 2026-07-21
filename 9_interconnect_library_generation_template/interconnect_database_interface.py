@@ -15,8 +15,11 @@ COMPONENT_MODEL_MAPPING = {
 
 class InterconnectDatabaseInterface():
 
-    def __init__(self, database_dir=Path(__file__).resolve().parent / "database"):
+    def __init__(self, 
+                 database_dir=Path(__file__).resolve().parent / "database",
+                 interconnect_dir=Path(__file__).resolve().parent / "interconnect_library"):
         self.database_dir = database_dir
+        self.interconnect_dir = interconnect_dir
 
     def parse_database(self)->list[PhotonicComponent]:
         components = []
@@ -33,6 +36,7 @@ class InterconnectDatabaseInterface():
                             name=directory.name,
                             model=values["interconnect_model"],
                             database_path=directory,
+                            interconnect_path=self.interconnect_dir
                         )
                     )
 

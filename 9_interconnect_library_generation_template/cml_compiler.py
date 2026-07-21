@@ -11,7 +11,8 @@ from __future__ import annotations
 
 import shlex
 import subprocess
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from typing import Callable, Optional
 from pathlib import Path
 from .components import PhotonicComponent
 
@@ -62,7 +63,8 @@ class CmlCompiler:
     def create_template_library(self) -> CommandResult:
         """Scaffold a new template library on disk."""
         return self._run(
-            ["template", "--foundry_name", self.library_name, "-d", str(self.library_dir)]
+            ["template", "--foundry_name", self.library_name, "-d", str(self.library_dir)],
+            simulate=lambda: self.library_dir.mkdir(parents=True, exist_ok=True),
         )
     
     def help(self) -> CommandResult:
@@ -118,18 +120,28 @@ class CmlCompiler:
             "--rename",
             ",".join(names),
         ]
+        
 
-        return self._run(args)
+        return self._run(args,simulate=lambda: [
+            (self.library_dir / component.name).mkdir(parents=True, exist_ok=True)
+            for component in components
+        ],)
 
     # ------------------------------------------------------------------ #
     # Internal execution
     # ------------------------------------------------------------------ #
 
-    def _run(self, args: list[str]) -> CommandResult:
+    def _run(
+        self,
+        args: list[str],
+        simulate: Optional[Callable[[], None]] = None,
+    ) -> CommandResult:
         command = [self.cli_path, *args]
 
         if self.dry_run:
             print(f"[dry-run] would execute: {shlex.join(command)}\n")
+            if simulate is not None:
+                simulate()
             result = CommandResult(command=command, returncode=0, stdout="(mocked)", stderr="")
         else:
             proc = subprocess.run(command, capture_output=True, text=True)

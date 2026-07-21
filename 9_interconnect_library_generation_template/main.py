@@ -15,8 +15,16 @@ photonic_components = interface.parse_database()
 for component in photonic_components:
     pprint([component.name, component.model, component.database_path], indent=2)
 
+# ----- 3. Launch template ---------#
 compiler.create_template_library()
 
 
-
+# ----- 4. Create equivalent models ---------#
 compiler.create_template_components(photonic_components)
+
+# ----- 5. Apply component-specific changes ---------#
+for component in photonic_components:
+    component.apply_changes()
+
+# ----- 6. Build library ---------#
+compiler.build_library()
