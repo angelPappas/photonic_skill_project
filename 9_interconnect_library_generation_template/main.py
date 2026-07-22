@@ -7,13 +7,13 @@ INTERCONNECT_LIBRARY_NAME = "photonics_foundry"
 
 compiler = CmlCompiler(library_name=INTERCONNECT_LIBRARY_NAME)
 
-# ----- 2. Parse Database ---------#
+# ----- 2. Parse Database & list components ---------#
 interface = InterconnectDatabaseInterface()
 
 photonic_components = interface.parse_database()
 
 for component in photonic_components:
-    pprint([component.name, component.model, component.database_path], indent=2)
+    pprint([component.name, component.model], indent=2)
 
 # ----- 3. Launch template ---------#
 compiler.create_template_library()
