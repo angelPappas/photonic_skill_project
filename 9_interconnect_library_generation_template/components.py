@@ -16,7 +16,12 @@ def convert_csv_to_json(csv_path: Path, json_path: Path) -> None:
     """
     with csv_path.open(newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
-        data = list(reader)
+
+        data = {field: [] for field in reader.fieldnames or []}
+
+        for row in reader:
+            for field in data:
+                data[field].append(row[field])
 
     json_path.parent.mkdir(parents=True, exist_ok=True)
 
